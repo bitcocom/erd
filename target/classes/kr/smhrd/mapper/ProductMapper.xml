@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.smhrd.mapper.ProductMapper">
+
+ <select id="productList" resultType="kr.smhrd.entity.PIC">
+    select t1.*, t2.path, t3.category1,t3.category2,t3.category3 
+from t_product t1, t_image t2, t_category t3 
+where t1.id=t2.product_id and t2.type=1 and t1.category_id=t3.id  
+ </select>
+ 
+ <select id="productList2" resultType="kr.smhrd.entity.PIC">
+    select t3.*, t4.path from 
+    (select t1.*,t2.category1,t2.category2,t2.category3 
+     from t_product t1,t_category t2 
+     where t1.category_id=t2.id) t3
+     left join (select * from t_image where type=1) t4
+     on t3.id=t4.product_id  
+ </select>
+ 
+  <select id="productDetail" resultType="kr.smhrd.entity.PIC">
+    select t1.*, t2.path, t3.category1,t3.category2,t3.category3 
+    from t_product t1, t_image t2, t_category t3 
+    where t1.id=#{id} and t1.id=t2.product_id and t2.type=3 and t1.category_id=t3.id
+ </select>
+ 
+ <select id="getImages" resultType="kr.smhrd.entity.Image">
+   select * from t_image where product_id=#{id} and type=2
+ </select>
+ 
+ <insert id="productInsert" parameterType="kr.smhrd.entity.Product">
+  INSERT INTO t_product(product_name,product_price,delivery_price,add_delivery_price,tags,outbound_days,seller_id,category_id)
+  VALUES
+  (#{product_name},#{product_price},#{delivery_price},#{add_delivery_price},#{tags},#{outbound_days},1,#{category_id})
+ </insert>
+ 
+ <insert id="productImageInsert" parameterType="kr.smhrd.entity.Image">
+  INSERT INTO t_image(product_id,type,path)
+  VALUES
+  (#{product_id},#{type},#{path})
+ </insert>
+ 
+ <select id="getCategorys" resultType="kr.smhrd.entity.Category">
+   select * from t_category
+ </select>
+ 
+ <select id="productGetById" resultType="kr.smhrd.entity.Product">
+   select * from t_product where id=#{id}
+ </select>
+ 
+ <select id="imageList" resultType="kr.smhrd.entity.Image">
+     select * from t_image where product_id=#{product_id}
+ </select>
+ 
+ <delete id="imageDelete">
+   delete from t_image where id=#{id}
+ </delete>
+ 
+ <delete id="imageProductDelete">
+   delete from t_image where product_id=#{product_id}
+ </delete>
+ 
+ <delete id="productDelete">
+    delete from t_product where id=#{id}
+ </delete>
+ 
+ <select id="getCategoryById" resultType="kr.smhrd.entity.Category">
+    select * from t_category where id=#{id}
+ </select>
+ 
+ <update id="productUpdate" parameterType="kr.smhrd.entity.Product">
+    update t_product 
+    set product_name=#{product_name},
+    product_price=#{product_price},
+    delivery_price=#{delivery_price},
+    add_delivery_price=#{add_delivery_price},
+    tags=#{tags},
+    outbound_days=#{outbound_days},
+    category_id=#{category_id} where id=#{id}
+ </update>
+</mapper>
